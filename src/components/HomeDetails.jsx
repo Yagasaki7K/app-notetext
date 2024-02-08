@@ -10,7 +10,7 @@ const HomeDetails = styled.div`
             background: transparent;
             border: none;
             color: var(--gray);
-            margin: 2rem 2rem 2rem 6.5rem;
+            margin: 2rem 0rem 2rem 8rem;
             padding-bottom: 1rem;
         }
 
@@ -109,6 +109,7 @@ const HomeDetails = styled.div`
                 align-items: center;
                 text-align: center;
                 flex-direction: column;
+                overflow: hidden;
 
                 textarea, p {
                     background: var(--background);
@@ -124,6 +125,8 @@ const HomeDetails = styled.div`
 
                 p {
                     text-align: left;
+                    width: 100%;
+                    height: 100%;
                 }
 
                 button {

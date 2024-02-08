@@ -7,6 +7,8 @@ import { toast } from 'sonner'
 function App() {
     const [shouldShowOnBoarding, setShouldShowOnBoarding] = useState(false)
     const [shouldShowThatNote, setShouldShowThatNote] = useState(false)
+    const [idFromNote, setIdFromNote] = useState('')
+    const [search, setSearch] = useState('')
     const [content, setContent] = useState('')
     const [notes, setNotes] = useState(() => {
         const notesOnStorage = localStorage.getItem("notes");
@@ -16,6 +18,19 @@ function App() {
 
         return [];
     });
+
+    function handleSearch(event) {
+        const query = event.target.value;
+
+        setSearch(query);
+    }
+
+    const filteredNotes =
+        search !== ""
+            ? notes.filter((note) =>
+                note.content.toLowerCase().includes(search.toLocaleLowerCase())
+            )
+            : notes;
 
     function handleCreateNote() {
         setShouldShowOnBoarding(true)
@@ -54,26 +69,30 @@ function App() {
         }
     }
 
+    function getIdFromNote(id) {
+        setIdFromNote(id)
+    }
+
     function deleteNote(id) {
-        let text = "Deseja deletar sua nota?";
+        // let text = "Deseja deletar sua nota?";
 
-        if (confirm(text) == true) {
-            const updatedNotes = notes.filter((note) => note.id !== id);
+        // if (confirm(text) == true) {
+        const updatedNotes = notes.filter((note) => note.id !== id);
 
-            setNotes(updatedNotes);
-            localStorage.setItem("notes", JSON.stringify(updatedNotes));
+        setNotes(updatedNotes);
+        localStorage.setItem("notes", JSON.stringify(updatedNotes));
 
-            toast.success("Nota deletada com sucesso!");
-            setShouldShowThatNote(false)
-        } else {
-            return
-        }
+        toast.error("Nota deletada com sucesso!");
+        setShouldShowThatNote(false)
+        // } else {
+        //     return
+        // }
     }
 
     return (
         <HomeDetails>
-            <form action="">
-                <input type="text" placeholder="Busque suas notas de texto ..." />
+            <form>
+                <input type="text" placeholder="Busque suas notas de texto ..." onChange={handleSearch} />
             </form>
 
             <div className="content">
@@ -85,9 +104,9 @@ function App() {
                     </p>
                 </div>
 
-                {notes.map((note) => {
+                {filteredNotes.map((note) => {
                     return (
-                        <div className="card gradientCard" key={note.id} onClick={() => setShouldShowThatNote(true)}>
+                        <div className="card gradientCard" key={note.id} onClick={() => { setShouldShowThatNote(true), getIdFromNote(note.id) }}>
                             <h3>{formatDistanceToNow(note.date, { locale: ptBR, addSuffix: true })}</h3>
                             <p>{note.content}</p>
                         </div>)
@@ -109,29 +128,29 @@ function App() {
                     </div>
                 ) : null}
 
-                {
-                    shouldShowThatNote ? (
-                        notes.map((note) => {
+                {shouldShowThatNote ? (
+                    <div className="modal">
+                        {notes.map((note) => {
                             return (
-                                <div className="modal" key={note.id}>
-                                    <div className="modal-content">
+                                idFromNote === note.id ? (
+                                    <div className="modal-content" key={note.id}>
                                         <h3>{formatDistanceToNow(note.date, { locale: ptBR, addSuffix: true })}</h3>
                                         <p>{note.content}</p>
                                         <div className="buttons">
                                             <button type="button" className="btnCancel" onClick={() => setShouldShowThatNote(false)}>
                                                 <span>Fechar nota <i className="uil uil-times-circle"></i></span>
                                             </button>
-
                                             <button type="button" className="btnDelete" onClick={() => deleteNote(note.id)}>
                                                 <span>Deletar nota <i className="uil uil-trash-alt"></i></span>
                                             </button>
                                         </div>
                                     </div>
-                                </div>
-                            )
-                        })
-                    ) : null
-                }
+                                ) : null
+                            );
+                        })}
+                    </div>
+                ) : null}
+
 
             </div>
             <button className="addBtn" onClick={handleCreateNote}><i className=" uil uil-plus-circle" /></button>
