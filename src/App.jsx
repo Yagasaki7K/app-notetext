@@ -6,30 +6,68 @@ import { toast } from 'sonner'
 
 function App() {
     const [shouldShowOnBoarding, setShouldShowOnBoarding] = useState(false)
-    const [content, setContent] = useState('Escreva um texto para a sua nota ..')
+    const [shouldShowThatNote, setShouldShowThatNote] = useState(false)
+    const [content, setContent] = useState('')
+    const [notes, setNotes] = useState(() => {
+        const notesOnStorage = localStorage.getItem("notes");
+        if (notesOnStorage) {
+            return JSON.parse(notesOnStorage);
+        }
+
+        return [];
+    });
 
     function handleCreateNote() {
         setShouldShowOnBoarding(true)
+    }
+
+    function onNoteCreated(content) {
+        const newNote = {
+            id: crypto.randomUUID(),
+            date: new Date(),
+            content: content,
+        };
+
+        const notesArray = [newNote, ...notes];
+
+        setNotes(notesArray);
+        localStorage.setItem("notes", JSON.stringify(notesArray));
     }
 
     function handleContentChange(event) {
         setContent(event.target.value)
 
         if (!event.target.value) {
-            setShouldShowOnBoarding(true)
+            setShouldShowOnBoarding(false)
         }
     }
 
     function handleSaveNote(event) {
         if (content === '') {
+            toast.warning('Sua nota está vazia!')
+        } else {
+            event.preventDefault()
+            onNoteCreated(content)
+            setContent('')
+            setShouldShowOnBoarding(false)
+            toast.success('Nota criada com sucesso!')
+        }
+    }
+
+    function deleteNote(id) {
+        let text = "Deseja deletar sua nota?";
+
+        if (confirm(text) == true) {
+            const updatedNotes = notes.filter((note) => note.id !== id);
+
+            setNotes(updatedNotes);
+            localStorage.setItem("notes", JSON.stringify(updatedNotes));
+
+            toast.success("Nota deletada com sucesso!");
+            setShouldShowThatNote(false)
+        } else {
             return
         }
-
-        event.preventDefault()
-        setContent('')
-        setShouldShowOnBoarding(true)
-
-        toast.success('Nota criada com sucesso!')
     }
 
     return (
@@ -47,10 +85,13 @@ function App() {
                     </p>
                 </div>
 
-                <div className="card gradientCard" onClick={handleCreateNote}>
-                    <h3>{formatDistanceToNow(new Date(), { locale: ptBR, addSuffix: true })}</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque cupiditate veritatis iste natus a obcaecati, optio fugit error eaque aliquam dolor impedit vel excepturi voluptas qui nihil eveniet sunt molestiae? lorem</p>
-                </div>
+                {notes.map((note) => {
+                    return (
+                        <div className="card gradientCard" key={note.id} onClick={() => setShouldShowThatNote(true)}>
+                            <h3>{formatDistanceToNow(note.date, { locale: ptBR, addSuffix: true })}</h3>
+                            <p>{note.content}</p>
+                        </div>)
+                })}
 
                 {shouldShowOnBoarding ? (
                     <div className="modal">
@@ -67,6 +108,30 @@ function App() {
                         </div>
                     </div>
                 ) : null}
+
+                {
+                    shouldShowThatNote ? (
+                        notes.map((note) => {
+                            return (
+                                <div className="modal" key={note.id}>
+                                    <div className="modal-content">
+                                        <h3>{formatDistanceToNow(note.date, { locale: ptBR, addSuffix: true })}</h3>
+                                        <p>{note.content}</p>
+                                        <div className="buttons">
+                                            <button type="button" className="btnCancel" onClick={() => setShouldShowThatNote(false)}>
+                                                <span>Fechar nota <i className="uil uil-times-circle"></i></span>
+                                            </button>
+
+                                            <button type="button" className="btnDelete" onClick={() => deleteNote(note.id)}>
+                                                <span>Deletar nota <i className="uil uil-trash-alt"></i></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })
+                    ) : null
+                }
 
             </div>
             <button className="addBtn" onClick={handleCreateNote}><i className=" uil uil-plus-circle" /></button>

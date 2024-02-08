@@ -110,16 +110,20 @@ const HomeDetails = styled.div`
                 text-align: center;
                 flex-direction: column;
 
-                textarea {
+                textarea, p {
                     background: var(--background);
-                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
                     border-radius: 5px;
+                    padding: 1rem;
                     color: var(--white);
                     resize: none;
                     width: 400px;
                     height: 200px;
-                    padding: 1rem;
                     font-family: 'Poppins', sans-serif;
+                }
+
+                p {
+                    text-align: left;
                 }
 
                 button {
@@ -143,6 +147,11 @@ const HomeDetails = styled.div`
                     }
 
                     .btnCancel {
+                        background: var(--orange);
+                    }
+
+                    .btnDelete {
+                        margin-left: 1rem;
                         background: var(--red);
                     }
                 }
