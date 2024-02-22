@@ -10,6 +10,7 @@ function App() {
     const [idFromNote, setIdFromNote] = useState('')
     const [search, setSearch] = useState('')
     const [content, setContent] = useState('')
+    const [title, setTitle] = useState('')
     const [notes, setNotes] = useState(() => {
         const notesOnStorage = localStorage.getItem("notes");
         if (notesOnStorage) {
@@ -36,9 +37,10 @@ function App() {
         setShouldShowOnBoarding(true)
     }
 
-    function onNoteCreated(content) {
+    function onNoteCreated(content, title) {
         const newNote = {
             id: crypto.randomUUID(),
+            title: title,
             date: new Date(),
             content: content,
         };
@@ -52,7 +54,15 @@ function App() {
     function handleContentChange(event) {
         setContent(event.target.value)
 
-        if (!event.target.value) {
+        if (!event.target.value && !title) {
+            setShouldShowOnBoarding(false)
+        }
+    }
+
+    function handleTitleChange(event) {
+        setTitle(event.target.value)
+
+        if (!event.target.value && !content) {
             setShouldShowOnBoarding(false)
         }
     }
@@ -60,13 +70,26 @@ function App() {
     function handleSaveNote(event) {
         if (content === '') {
             toast.warning('Sua nota está vazia!')
-        } else {
+        }
+
+        if (title === '') {
+            toast.warning('Sua nota está sem título!')
+        }
+
+        if (!content && !title) {
             event.preventDefault()
-            onNoteCreated(content)
+            onNoteCreated(content, title)
             setContent('')
+            setTitle('')
             setShouldShowOnBoarding(false)
             toast.success('Nota criada com sucesso!')
         }
+    }
+
+    function handleCleanNote() {
+        setContent('')
+        setTitle('')
+        setShouldShowOnBoarding(false)
     }
 
     function getIdFromNote(id) {
@@ -107,7 +130,8 @@ function App() {
                 {filteredNotes.map((note) => {
                     return (
                         <div className="card gradientCard" key={note.id} onClick={() => { setShouldShowThatNote(true), getIdFromNote(note.id) }}>
-                            <h3>{formatDistanceToNow(note.date, { locale: ptBR, addSuffix: true })}</h3>
+                            <h3>{note.title}</h3>
+                            <i className="date">{formatDistanceToNow(note.date, { locale: ptBR, addSuffix: true })}</i>
                             <p>{note.content}</p>
                         </div>)
                 })}
@@ -115,12 +139,13 @@ function App() {
                 {shouldShowOnBoarding ? (
                     <div className="modal">
                         <div className="modal-content">
-                            <textarea autoFocus onChange={handleContentChange} value={content} />
+                            <input type="text" onChange={handleTitleChange} value={title} placeholder="Título da Nota" />
+                            <textarea autoFocus onChange={handleContentChange} value={content} placeholder="Conteúdo da Nota" />
                             <div className="buttons">
                                 <button type="button" className="btnSave" onClick={handleSaveNote}>
                                     <span>Salvar nota <i className="uil uil-check-circle"></i></span>
                                 </button>
-                                <button type="button" className="btnCancel" onClick={() => setShouldShowOnBoarding(false)}>
+                                <button type="button" className="btnCancel" onClick={() => { handleCleanNote() }}>
                                     <span>Cancelar <i className="uil uil-times-circle"></i></span>
                                 </button>
                             </div>
@@ -134,7 +159,8 @@ function App() {
                             return (
                                 idFromNote === note.id ? (
                                     <div className="modal-content" key={note.id}>
-                                        <h3>{formatDistanceToNow(note.date, { locale: ptBR, addSuffix: true })}</h3>
+                                        <h3>{note.title}</h3>
+                                        <i className="date">{formatDistanceToNow(note.date, { locale: ptBR, addSuffix: true })}</i>
                                         <p>{note.content}</p>
                                         <div className="buttons">
                                             <button type="button" className="btnCancel" onClick={() => setShouldShowThatNote(false)}>

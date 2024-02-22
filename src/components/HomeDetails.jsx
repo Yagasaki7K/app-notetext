@@ -70,6 +70,10 @@ const HomeDetails = styled.div`
                 color: var(--gray);
             }
 
+            .date {
+                font-size: 0.9rem;
+            }
+
             .advice {
                 color: var(--gray);
             }
@@ -111,6 +115,18 @@ const HomeDetails = styled.div`
                 flex-direction: column;
                 overflow: hidden;
 
+                input {
+                    width: 25rem;
+                    font-size: 0.8rem;
+                    background: transparent;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 5px;
+                    padding: 1rem;
+                    color: var(--gray);
+                    margin-bottom: 0.5rem;
+                    outline: none;
+                }
+
                 textarea, p {
                     background: var(--background);
                     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -120,17 +136,17 @@ const HomeDetails = styled.div`
                     resize: none;
                     width: 400px;
                     height: 200px;
-                    font-family: 'Poppins', sans-serif;
+                    outline: none;
                 }
 
                 p {
                     text-align: left;
-                    width: 100%;
+                    width: 90%;
                     height: 100%;
+                    margin-top: 1rem;
                 }
 
                 button {
-                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
                     font-size: 14px;
                     padding: 10px 20px;
                     color: #fff;
