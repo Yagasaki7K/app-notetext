@@ -1,5 +1,5 @@
 <p align="center">
-   <img src="https://seeklogo.com/images/V/vite-logo-BFD4283991-seeklogo.com.png" width="300"/>
+   <img src="https://seeklogo.com/images/V/vite-logo-BFD4283991-seeklogo.com.png" width="200"/>
 </p>
 
 <p align="center">
