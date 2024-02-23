@@ -77,6 +77,46 @@ const HomeDetails = styled.div`
             .advice {
                 color: var(--gray);
             }
+
+            .markdown-preview {
+                overflow: hidden;
+                color: var(--white);
+                background: transparent;
+                margin-top: 0.3rem;
+                
+                textarea {
+                    -webkit-text-fill-color: #fff;
+                    background: var(--background);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    height: 27rem;
+                }
+
+                .w-md-editor-content {
+                    height: 12rem;
+                }
+
+                .w-md-editor {
+                    background: var(--background);
+                }
+
+                * {
+                    overflow: hidden;
+                }
+
+                .w-md-editor-toolbar, .w-md-editor-bar {
+                    display: none;
+                }
+
+                .w-md-editor-area {
+                    height: 15rem;
+                    overflow: hidden;
+                }
+
+                .wmde-markdown {
+                    background: transparent;
+                    font-family: 'Poppins', sans-serif;
+                }
+            }
         }
 
         .card:hover {
@@ -105,8 +145,6 @@ const HomeDetails = styled.div`
                 border-radius: 8px;
                 padding: 20px;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-                max-width: 80%; 
-                max-height: 80%;
                 overflow-y: auto;
                 display: flex;
                 justify-content: center;
@@ -118,38 +156,35 @@ const HomeDetails = styled.div`
                 input {
                     width: 25rem;
                     font-size: 0.8rem;
-                    background: transparent;
+                    background: var(--background);
                     border: 1px solid rgba(255, 255, 255, 0.1);
                     border-radius: 5px;
                     padding: 1rem;
-                    color: var(--gray);
+                    color: var(--white);
                     margin-bottom: 0.5rem;
                     outline: none;
                 }
 
                 textarea, p {
                     background: var(--background);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border: none;
+                    background: #0d1117;
                     border-radius: 5px;
                     padding: 1rem;
                     color: var(--white);
                     resize: none;
-                    width: 400px;
-                    height: 200px;
                     outline: none;
                 }
 
                 p {
                     text-align: left;
-                    width: 90%;
-                    height: 100%;
                     margin-top: 1rem;
                 }
 
                 button {
                     font-size: 14px;
                     padding: 10px 20px;
-                    color: #fff;
+                    color: var(--white);
                     border: none;
                     border-radius: 5px;
                     cursor: pointer;
@@ -159,10 +194,115 @@ const HomeDetails = styled.div`
                     font-weight: bold;
                 }
 
+                .date {
+                    margin-bottom: 1rem;
+                }
+
+                .markdown {
+                    overflow: hidden;
+                    color: var(--white);
+                    
+                    textarea {
+                        -webkit-text-fill-color: #fff;
+                        background: var(--background);
+                        border: 1px solid rgba(255, 255, 255, 0.1);
+                        height: 15rem;
+                    }
+
+                    .w-md-editor-content {
+                        width: 27rem;
+                    }
+
+                    .w-md-editor {
+                        background: var(--background);
+                    }
+
+                    .markdown-preview-card {
+                        height: 30rem;
+
+                        .wmde-markdown {
+                            background: var(--background-alt);
+                            border-radius: 10px;
+                            padding: 1rem;
+                        }
+
+                        .w-md-editor-content {
+                            height: 70rem;
+                        }
+
+                        * {
+                            background: transparent;
+                        }
+                    }
+
+                    .w-md-editor-toolbar, .w-md-editor-bar {
+                        display: none;
+                    }
+
+                    .w-md-editor-area {
+                        height: 15rem;
+                        overflow: hidden;
+                    }
+                }
+
+                .markdown-preview {
+                    overflow: hidden;
+                    color: var(--white);
+                    width: 70rem;
+                    
+                    textarea {
+                        -webkit-text-fill-color: #fff;
+                        background: var(--background);
+                        border: 1px solid rgba(255, 255, 255, 0.1);
+                        height: 27rem;
+                    }
+
+                    .w-md-editor-text-input {
+                        font-family: 'Poppins', sans-serif;
+                        height: 30rem;
+                    }
+
+                    .markdown-preview-card {
+                        height: 30rem;
+
+                        .wmde-markdown {
+                            background: var(--background-alt);
+                            border-radius: 10px;
+                            padding: 1rem;
+                        }
+
+                        .w-md-editor-content {
+                            height: 70rem;
+                        }
+
+                        * {
+                            background: transparent;
+                        }
+                    }
+
+                    .w-md-editor-toolbar, .w-md-editor-bar {
+                        display: none;
+                    }
+
+                    .w-md-editor-area {
+                        height: 15rem;
+                        overflow: hidden;
+                    }
+                }
+
+                .markdown-edit {
+                    position: relative;
+                    margin-top: -4rem;
+                }
+
                 .buttons {
                     .btnSave {
                         background: var(--green);
                         margin-right: 1rem;
+                    }
+
+                    .btnMarkdown {
+                        background: var(--green);
                     }
 
                     .btnCancel {
@@ -170,7 +310,7 @@ const HomeDetails = styled.div`
                     }
 
                     .btnDelete {
-                        margin-left: 1rem;
+                        margin: 0 1rem;
                         background: var(--red);
                     }
                 }

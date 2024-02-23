@@ -4,6 +4,10 @@ import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 import { toast } from 'sonner'
 
+// import dynamic from "next/dynamic";
+import MDEditor, { commands } from '@uiw/react-md-editor'
+import "@uiw/react-md-editor/markdown-editor.css";
+
 function App() {
     const [shouldShowOnBoarding, setShouldShowOnBoarding] = useState(false)
     const [shouldShowThatNote, setShouldShowThatNote] = useState(false)
@@ -51,14 +55,6 @@ function App() {
         localStorage.setItem("notes", JSON.stringify(notesArray));
     }
 
-    function handleContentChange(event) {
-        setContent(event.target.value)
-
-        if (!event.target.value && !title) {
-            setShouldShowOnBoarding(false)
-        }
-    }
-
     function handleTitleChange(event) {
         setTitle(event.target.value)
 
@@ -76,14 +72,12 @@ function App() {
             toast.warning('Sua nota está sem título!')
         }
 
-        if (!content && !title) {
-            event.preventDefault()
-            onNoteCreated(content, title)
-            setContent('')
-            setTitle('')
-            setShouldShowOnBoarding(false)
-            toast.success('Nota criada com sucesso!')
-        }
+        event.preventDefault()
+        onNoteCreated(content, title)
+        setContent('')
+        setTitle('')
+        setShouldShowOnBoarding(false)
+        toast.success('Nota criada com sucesso!')
     }
 
     function handleCleanNote() {
@@ -112,6 +106,17 @@ function App() {
         // }
     }
 
+    function copyNote(content) {
+        navigator.clipboard.writeText(content);
+        toast.success("Nota copiada com sucesso!");
+    }
+
+    const codePreview = {
+        name: "preview",
+        keyCommand: "preview",
+        value: "edit",
+    };
+
     return (
         <HomeDetails>
             <form>
@@ -132,7 +137,9 @@ function App() {
                         <div className="card gradientCard" key={note.id} onClick={() => { setShouldShowThatNote(true), getIdFromNote(note.id) }}>
                             <h3>{note.title}</h3>
                             <i className="date">{formatDistanceToNow(note.date, { locale: ptBR, addSuffix: true })}</i>
-                            <p>{note.content}</p>
+                            <MDEditor height={150} value={note.content} onChange={setContent}
+                                className="markdown-preview" preview="preview"
+                                extraCommands={[codePreview, commands.fullscreen]}>{note.content}</MDEditor>
                         </div>)
                 })}
 
@@ -140,8 +147,14 @@ function App() {
                     <div className="modal">
                         <div className="modal-content">
                             <input type="text" onChange={handleTitleChange} value={title} placeholder="Título da Nota" />
-                            <textarea autoFocus onChange={handleContentChange} value={content} placeholder="Conteúdo da Nota" />
-                            <div className="buttons">
+
+                            <div className="markdown">
+                                <MDEditor height={300} value={content} onChange={setContent}
+                                    className="markdown-editor" preview="edit"
+                                    extraCommands={[codePreview, commands.fullscreen]} />
+                            </div>
+
+                            <div className="buttons markdown-edit">
                                 <button type="button" className="btnSave" onClick={handleSaveNote}>
                                     <span>Salvar nota <i className="uil uil-check-circle"></i></span>
                                 </button>
@@ -159,15 +172,25 @@ function App() {
                             return (
                                 idFromNote === note.id ? (
                                     <div className="modal-content" key={note.id}>
-                                        <h3>{note.title}</h3>
-                                        <i className="date">{formatDistanceToNow(note.date, { locale: ptBR, addSuffix: true })}</i>
-                                        <p>{note.content}</p>
+                                        <i className="date"><strong>{note.title}</strong> - {formatDistanceToNow(note.date, { locale: ptBR, addSuffix: true })}</i>
+
+                                        <div className="markdown-preview">
+                                            <MDEditor value={note.content} onChange={setContent}
+                                                className="markdown-preview-card" height={500} preview="preview"
+                                                extraCommands={[codePreview, commands.fullscreen]} >{note.content}</MDEditor>
+                                        </div>
+
                                         <div className="buttons">
-                                            <button type="button" className="btnCancel" onClick={() => setShouldShowThatNote(false)}>
-                                                <span>Fechar nota <i className="uil uil-times-circle"></i></span>
+                                            <button type="button" className="btnMarkdown" onClick={() => copyNote(note.content)}>
+                                                <span>Copiar Nota <i className="uil uil-trash-alt"></i></span>
                                             </button>
+
                                             <button type="button" className="btnDelete" onClick={() => deleteNote(note.id)}>
                                                 <span>Deletar nota <i className="uil uil-trash-alt"></i></span>
+                                            </button>
+
+                                            <button type="button" className="btnCancel" onClick={() => setShouldShowThatNote(false)}>
+                                                <span>Fechar nota <i className="uil uil-times-circle"></i></span>
                                             </button>
                                         </div>
                                     </div>
